@@ -15,6 +15,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +26,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class UsuarioService {
+public class UsuarioService implements UserDetailsService {
 
   @Autowired
   private UsuariosRepository repository;
@@ -95,5 +98,16 @@ public class UsuarioService {
     } catch (DataIntegrityViolationException e) {
       throw new DatabaseException("Intregrity violation");
     }
+  }
+
+
+  //loadUserByUsername recebe o usuario e verifica se ele existe para ter acesso
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    Usuario usuario = repository.findByEmail(username);
+    if(usuario == null){
+      throw new UsernameNotFoundException("E-mail, não existe");
+    }
+    return usuario;
   }
 }

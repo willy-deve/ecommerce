@@ -52,37 +52,40 @@ public class Usuario implements UserDetails {
   public Collection<? extends GrantedAuthority> getAuthorities() {
 
     //Percorrendo a List de ROLES e mandando ela CONVERTIDA EM UMA LISTA DE GRANTEDAUTHORITY
+    //(ADMIN, CLIENT)
     return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
 
   }
 
   @Override
   public String getPassword() {
-    return null;
+    return senha;
   }
 
   @Override
   public String getUsername() {
-    return null;
+    return email;
+  }
+
+
+  //Retorna tudo true, pois o JWT + OAUTH já farao tudo isso, entao nao preciso de um algoritmo logico
+  @Override
+  public boolean isAccountNonExpired() {//Testa se a conta esta expirada
+    return true;
   }
 
   @Override
-  public boolean isAccountNonExpired() {
-    return false;
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return false;
+  public boolean isAccountNonLocked() {//Testa se o user esta bloqueado;
+    return true;
   }
 
   @Override
   public boolean isCredentialsNonExpired() {
-    return false;
+    return true;
   }
 
   @Override
-  public boolean isEnabled() {
-    return false;
+  public boolean isEnabled() {//
+    return true;
   }
 }
